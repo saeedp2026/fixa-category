@@ -9,6 +9,6 @@ public final class RegionMapper {
     }
 
     public static RegionResponse toResponse(Region region) {
-        return new RegionResponse(region.getId(), region.getName());
+        return new RegionResponse(region.getId(), region.getName(), region.isEnabled());
     }
 }

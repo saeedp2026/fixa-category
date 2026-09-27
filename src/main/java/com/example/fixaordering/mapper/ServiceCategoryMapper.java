@@ -9,6 +9,7 @@ public final class ServiceCategoryMapper {
     }
 
     public static ServiceCategoryResponse toResponse(ServiceCategory serviceCategory) {
-        return new ServiceCategoryResponse(serviceCategory.getId(), serviceCategory.getName());
+        return new ServiceCategoryResponse(serviceCategory.getId(), serviceCategory.getName(),
+                serviceCategory.isEnabled());
     }
 }

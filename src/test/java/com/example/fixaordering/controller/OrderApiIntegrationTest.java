@@ -4,12 +4,7 @@ import com.example.fixaordering.domain.Address;
 import com.example.fixaordering.domain.Customer;
 import com.example.fixaordering.domain.Region;
 import com.example.fixaordering.domain.ServiceCategory;
-import com.example.fixaordering.repository.AddressRepository;
-import com.example.fixaordering.repository.CustomerRepository;
-import com.example.fixaordering.repository.OrderRepository;
-import com.example.fixaordering.repository.OrderStatusHistoryRepository;
-import com.example.fixaordering.repository.RegionRepository;
-import com.example.fixaordering.repository.ServiceCategoryRepository;
+import com.example.fixaordering.repository.*;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,13 +26,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class OrderApiIntegrationTest {
 
-    @Autowired MockMvc mockMvc;
-    @Autowired ServiceCategoryRepository serviceCategoryRepository;
-    @Autowired RegionRepository regionRepository;
-    @Autowired CustomerRepository customerRepository;
-    @Autowired AddressRepository addressRepository;
-    @Autowired OrderRepository orderRepository;
-    @Autowired OrderStatusHistoryRepository orderStatusHistoryRepository;
+    @Autowired
+    MockMvc mockMvc;
+    @Autowired
+    ServiceCategoryRepository serviceCategoryRepository;
+    @Autowired
+    RegionRepository regionRepository;
+    @Autowired
+    CustomerRepository customerRepository;
+    @Autowired
+    AddressRepository addressRepository;
+    @Autowired
+    OrderRepository orderRepository;
+    @Autowired
+    OrderStatusHistoryRepository orderStatusHistoryRepository;
 
     private ServiceCategory category;
     private ServiceCategory disabledCategory;
@@ -239,7 +241,15 @@ class OrderApiIntegrationTest {
 
         mockMvc.perform(get("/api/service-categories"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("Boiler Repair"));
+                .andExpect(jsonPath("$[0].name").value("Boiler Repair"))
+                .andExpect(jsonPath("$[0].enabled").value(true));
+
+        mockMvc.perform(get("/api/regions"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("Tehran"))
+                .andExpect(jsonPath("$[0].enabled").value(true))
+                .andExpect(jsonPath("$[1].name").value("Karaj"))
+                .andExpect(jsonPath("$[1].enabled").value(false));
 
         mockMvc.perform(get("/api/addresses"))
                 .andExpect(status().isOk())
@@ -258,8 +268,8 @@ class OrderApiIntegrationTest {
 
     private void transition(Number id, String newStatus) throws Exception {
         mockMvc.perform(post("/api/orders/{id}/status", id.longValue())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(statusJson(newStatus)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(statusJson(newStatus)))
                 .andExpect(status().isOk());
     }
 
