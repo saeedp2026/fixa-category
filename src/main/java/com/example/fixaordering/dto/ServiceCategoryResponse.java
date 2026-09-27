@@ -1,4 +1,4 @@
 package com.example.fixaordering.dto;
 
-public record ServiceCategoryResponse(Long id, String name, boolean enabled) {
+public record ServiceCategoryResponse(Long id, String name, boolean enabled, Long parentId) {
 }

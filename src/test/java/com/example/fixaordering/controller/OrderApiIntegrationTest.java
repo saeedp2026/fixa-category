@@ -43,6 +43,7 @@ class OrderApiIntegrationTest {
 
     private ServiceCategory category;
     private ServiceCategory disabledCategory;
+    private ServiceCategory categoryUnderDisabledParent;
     private Region region;
     private Customer customer;
     private Address address;
@@ -60,6 +61,8 @@ class OrderApiIntegrationTest {
 
         category = serviceCategoryRepository.save(new ServiceCategory("Boiler Repair", true));
         disabledCategory = serviceCategoryRepository.save(new ServiceCategory("Window Cleaning", false));
+        categoryUnderDisabledParent = serviceCategoryRepository.save(
+                new ServiceCategory("Radiator Repair", true, disabledCategory));
         region = regionRepository.save(new Region("Tehran", true));
         Region disabledRegion = regionRepository.save(new Region("Karaj", false));
         customer = customerRepository.save(new Customer("Ali", "Ahmadi", "09123456789", "0023456789"));
@@ -140,6 +143,17 @@ class OrderApiIntegrationTest {
         mockMvc.perform(post("/api/orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(orderJson(disabledCategory.getId(), customer.getId(), address.getId())))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.code").value("SERVICE_CATEGORY_DISABLED"))
+                .andExpect(jsonPath("$.message").isNotEmpty());
+    }
+
+    @Test
+    @DisplayName("POST /api/orders for a category with a disabled ancestor returns business error")
+    void createOrderWithDisabledAncestorCategoryIsRejected() throws Exception {
+        mockMvc.perform(post("/api/orders")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(orderJson(categoryUnderDisabledParent.getId(), customer.getId(), address.getId())))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.code").value("SERVICE_CATEGORY_DISABLED"))
                 .andExpect(jsonPath("$.message").isNotEmpty());

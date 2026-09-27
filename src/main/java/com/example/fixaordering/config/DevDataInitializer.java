@@ -44,9 +44,17 @@ public class DevDataInitializer implements ApplicationRunner {
         Region karaj = regionRepository.save(new Region("Karaj", false));
         Region esf = regionRepository.save(new Region("esf", true));
 
-        serviceCategoryRepository.save(new ServiceCategory("Boiler Repair", true));
-        serviceCategoryRepository.save(new ServiceCategory("Air Conditioner Service", true));
-        serviceCategoryRepository.save(new ServiceCategory("Window Cleaning", false));
+        ServiceCategory boilerRepair = serviceCategoryRepository.save(new ServiceCategory("Boiler Repair", true));
+        ServiceCategory airConditionerService = serviceCategoryRepository.save(new ServiceCategory("Air Conditioner Service", true));
+        serviceCategoryRepository.save(new ServiceCategory("Wall-Mounted Boiler Repair", true, boilerRepair));
+        ServiceCategory central = serviceCategoryRepository.save(new ServiceCategory("Central Heating Boiler Repair", false, boilerRepair));
+        serviceCategoryRepository.save(new ServiceCategory("Central Heating Boiler Repair Child1", true, central));
+        serviceCategoryRepository.save(new ServiceCategory("Split AC Service", true, airConditionerService));
+        ServiceCategory window = serviceCategoryRepository.save(new ServiceCategory("Window Cleaning", false));
+        ServiceCategory windowChild = serviceCategoryRepository.save(new ServiceCategory("Window Cleaning child", true, window));
+        // cycle test:
+//        window.setParent(windowChild);
+//        serviceCategoryRepository.save(window);
 
         Customer customer = customerRepository.save(new Customer("Ali", "Ahmadi", "09123456789", "0023456789"));
         addressRepository.save(new Address("Work", "Tehran, Valiasr St, No 5", customer, tehran));

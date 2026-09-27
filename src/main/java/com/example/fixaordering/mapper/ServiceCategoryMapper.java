@@ -9,7 +9,8 @@ public final class ServiceCategoryMapper {
     }
 
     public static ServiceCategoryResponse toResponse(ServiceCategory serviceCategory) {
+        ServiceCategory parent = serviceCategory.getParent();
         return new ServiceCategoryResponse(serviceCategory.getId(), serviceCategory.getName(),
-                serviceCategory.isEnabled());
+                serviceCategory.isEnabled(), parent != null ? parent.getId() : null);
     }
 }

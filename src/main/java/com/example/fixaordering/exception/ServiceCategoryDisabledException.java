@@ -7,7 +7,8 @@ public class ServiceCategoryDisabledException extends BusinessException {
 
     public ServiceCategoryDisabledException(Long id) {
         super("SERVICE_CATEGORY_DISABLED",
-                "The selected service category (id %d) is disabled.".formatted(id),
+                "The selected service category (id %d) is disabled or one of its parent categories is disabled."
+                        .formatted(id),
                 HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }
